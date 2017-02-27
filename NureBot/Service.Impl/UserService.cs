@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NureBot.Model;
-using NureBot.Repository;
+using TelegramNureBot.Model;
+using TelegramNureBot.Repository;
 
-namespace NureBot.Service.Impl
+namespace TelegramNureBot.Service.Impl
 {
     public class UserService : IUserService
     {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace NureBot.Repository
+namespace TelegramNureBot.Repository
 {
     public interface IRepository<T>
     {

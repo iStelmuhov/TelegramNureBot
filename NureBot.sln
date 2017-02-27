@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26206.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NureBot", "NureBot\NureBot.csproj", "{9BCDF6DF-E8AA-40B4-BC92-6C110E1CDDA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramNureBot", "NureBot\TelegramNureBot.csproj", "{9BCDF6DF-E8AA-40B4-BC92-6C110E1CDDA8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CistNureApi", "CistNureApi\CistNureApi.csproj", "{9EDEB637-865A-42DA-BF75-A9D66C839856}"
 EndProject

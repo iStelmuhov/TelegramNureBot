@@ -1,8 +1,8 @@
 ﻿using System;
-using NureBot.Repository;
-using NureBot.Service.Impl.Exceptions;
+using TelegramNureBot.Repository;
+using TelegramNureBot.Service.Impl.Exceptions;
 
-namespace NureBot.Service.Impl
+namespace TelegramNureBot.Service.Impl
 {
     sealed class ServiceUtils
     {

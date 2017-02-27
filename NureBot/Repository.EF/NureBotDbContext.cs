@@ -1,9 +1,9 @@
 ﻿using System.Data.Common;
 using System.Data.Entity;
-using NureBot.Model;
-using NureBot.Repository.EF.Configurations;
+using TelegramNureBot.Model;
+using TelegramNureBot.Repository.EF.Configurations;
 
-namespace NureBot.Repository.EF
+namespace TelegramNureBot.Repository.EF
 {
     public class NureBotDbContext : DbContext
     {

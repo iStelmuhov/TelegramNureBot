@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using NureBot.Model;
+using TelegramNureBot.Model;
 
-namespace NureBot.Service
+namespace TelegramNureBot.Service
 {
     public interface IUserService
     {

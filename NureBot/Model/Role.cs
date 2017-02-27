@@ -1,4 +1,4 @@
-﻿namespace NureBot.Model
+﻿namespace TelegramNureBot.Model
 {
     public enum Role
     {

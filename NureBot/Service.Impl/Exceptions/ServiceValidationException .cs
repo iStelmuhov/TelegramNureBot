@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NureBot.Service.Impl.Exceptions
+namespace TelegramNureBot.Service.Impl.Exceptions
 {
     public class ServiceValidationException : Exception
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace J3QQ4
+namespace TelegramNureBot.Model
 {
     public class Emoji
     {

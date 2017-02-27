@@ -1,43 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Resources;
 using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using J3QQ4;
-using NureBot.Model;
-using NureBot.Properties;
-using NureBot.Repository;
-using NureBot.Repository.EF;
-using NureBot.Repository.EF.Implementations;
-using NureBot.Service;
-using NureBot.Service.Impl;
+using CistNureApi;
+using Syn.Bot.Oscova;
+using Syn.Bot.Oscova.Interfaces;
+using Syn.Bot.Oscova.Languages.English;
+using TelegramNureBot.Model;
+using TelegramNureBot.Properties;
+using TelegramNureBot.Repository;
+using TelegramNureBot.Repository.EF;
+using TelegramNureBot.Repository.EF.Implementations;
+using TelegramNureBot.Service;
+using TelegramNureBot.Service.Impl;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using User = NureBot.Model.User;
+using TelegramNureBot.Helper;
+using User = TelegramNureBot.Model.User;
 
-namespace NureBot
+namespace TelegramNureBot
 {
     class Program
     {
         public static readonly TelegramBotClient Bot = new TelegramBotClient("356520093:AAGKBe8YFpR5_5WIkGfoeRbdTMuOKE2O9GQ");
         public static IUserService UserService { get; set; }
-        public static ResourceManager rm;
+        public static ResourceManager rm { get; set; }
+        public static OscovaBot RecognitionSystem { get; set; }
+
         static void Main(string[] args)
         {
             rm = Resources.ResourceManager;
 
+            var me = Bot.GetMeAsync().Result;
+            Console.Title = me.Username;
+
             Bot.OnMessage += Bot_OnMessage;
             Bot.OnReceiveError += Bot_OnReceiveError;
 
-            var me = Bot.GetMeAsync().Result;
-
-            Console.Title = me.Username;
+            RecognitionSystem = new OscovaBot();
+            RecognitionSystem.MainUser.Context.SharedData.Add(Bot);
+            RecognitionSystem.MainUser.Context.SharedData.Add(UserService);
+            RecognitionSystem.Language.Stemmer = new RussianStemmer();
+            RecognitionSystem.Language.StopWords = StopWordsGenerator.GenerateRussianStopWords();
+            //TODO WORDNET
 
             using (var dbContext = new NureBotDbContext(true))
             {
@@ -57,7 +70,7 @@ namespace NureBot
             Debugger.Break();
         }
 
-        private static void Bot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
+        private static async void Bot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
             var message = e.Message;
             if (message == null || message.Type != MessageType.TextMessage) return;
@@ -67,7 +80,16 @@ namespace NureBot
 
             if (user.Role == Role.NotSet) return;
 
+            BotUser recognitionUser = RecognitionSystem.Users.FirstOrDefault(a => a.ID == user.Id.ToString()) ??
+                                      RecognitionSystem.CreateUser(user.ToString());
 
+            recognitionUser.Context.SharedData.Add(user);
+
+            var request = recognitionUser.CreateRequest(message.Text);
+            var evaluateRequest=RecognitionSystem.Evaluate(request);
+            evaluateRequest.Invoke();
+
+            await Bot.SendTextMessageAsync(message.Chat.Id, evaluateRequest.Serialize());
         }
 
 
@@ -130,4 +152,5 @@ namespace NureBot
 
         }
     }
+
 }

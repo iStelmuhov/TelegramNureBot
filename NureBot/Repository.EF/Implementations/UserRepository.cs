@@ -1,8 +1,8 @@
 ﻿using System.Data.Entity;
 using System.Linq;
-using NureBot.Model;
+using TelegramNureBot.Model;
 
-namespace NureBot.Repository.EF.Implementations
+namespace TelegramNureBot.Repository.EF.Implementations
 {
     public class UserRepository:BasicRepository<User>,IUserRepository
     {

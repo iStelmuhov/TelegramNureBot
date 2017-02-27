@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Linq;
 
-namespace NureBot.Repository.EF.Implementations
+namespace TelegramNureBot.Repository.EF.Implementations
 {
     public class BasicRepository<T> where T : class
     {

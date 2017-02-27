@@ -1,6 +1,6 @@
-﻿using NureBot.Model;
+﻿using TelegramNureBot.Model;
 
-namespace NureBot.Repository
+namespace TelegramNureBot.Repository
 {
     public interface IUserRepository : IRepository<User>
     {

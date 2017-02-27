@@ -1,8 +1,8 @@
 ﻿using System.Data.Entity.ModelConfiguration;
 using System.Runtime.InteropServices.ComTypes;
-using NureBot.Model;
+using TelegramNureBot.Model;
 
-namespace NureBot.Repository.EF.Configurations
+namespace TelegramNureBot.Repository.EF.Configurations
 {
     public class UserConfiguration:EntityTypeConfiguration<User>
     {
