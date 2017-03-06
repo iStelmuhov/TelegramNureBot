@@ -1,68 +1,89 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Resources;
-using System.Runtime.Remoting;
-using System.Text;
+using Microsoft.Practices.Unity;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using CistNureApi;
+using Dependencies;
+using Model;
+using Newtonsoft.Json;
+using Repository.EF;
+using Service;
 using Syn.Bot.Oscova;
-using Syn.Bot.Oscova.Interfaces;
-using Syn.Bot.Oscova.Languages.English;
-using TelegramNureBot.Model;
-using TelegramNureBot.Properties;
-using TelegramNureBot.Repository;
-using TelegramNureBot.Repository.EF;
-using TelegramNureBot.Repository.EF.Implementations;
-using TelegramNureBot.Service;
-using TelegramNureBot.Service.Impl;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramNureBot.Dialogs;
 using TelegramNureBot.Helper;
-using User = TelegramNureBot.Model.User;
+using TelegramNureBot.Properties;
+using User = Model.User;
+using Teacher = Model.Teacher;
 
 namespace TelegramNureBot
 {
     class Program
     {
-        public static readonly TelegramBotClient Bot = new TelegramBotClient("356520093:AAGKBe8YFpR5_5WIkGfoeRbdTMuOKE2O9GQ");
-        public static IUserService UserService { get; set; }
-        public static ResourceManager rm { get; set; }
+        [Dependency]
+        public static TelegramBotClient Bot { get; set; }
+        [Dependency]
+        public static IUserService UService { get; set; }
+        [Dependency]
         public static OscovaBot RecognitionSystem { get; set; }
+
+        public static ResourceManager Rm => Resources.ResourceManager;
 
         static void Main(string[] args)
         {
-            rm = Resources.ResourceManager;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
 
-            var me = Bot.GetMeAsync().Result;
-            Console.Title = me.Username;
+            var dbContext = new NureBotDbContext(false);
+            var unityContainer = new UnityContainer();
+            dbContext.Database.Initialize(true);
+            ContainerBoostraper.RegisterTypes(unityContainer, dbContext, "356520093:AAGKBe8YFpR5_5WIkGfoeRbdTMuOKE2O9GQ");
+
+            Bot = unityContainer.Resolve<TelegramBotClient>();
+            UService = unityContainer.Resolve<IUserService>();
+            RecognitionSystem = unityContainer.Resolve<OscovaBot>();
+
+            Console.Title = Bot.GetMeAsync().Result.Username;
 
             Bot.OnMessage += Bot_OnMessage;
             Bot.OnReceiveError += Bot_OnReceiveError;
 
-            RecognitionSystem = new OscovaBot();
+            RecognitionSystem.Dialogs.Add(new CistDialog());
             RecognitionSystem.MainUser.Context.SharedData.Add(Bot);
-            RecognitionSystem.MainUser.Context.SharedData.Add(UserService);
+            RecognitionSystem.MainUser.Context.SharedData.Add(UService);
             RecognitionSystem.Language.Stemmer = new RussianStemmer();
             RecognitionSystem.Language.StopWords = StopWordsGenerator.GenerateRussianStopWords();
+
+            RecognitionSystem.Trainer.StartTraining();
+            RecognitionSystem.Recognizers.Clear();
+            RecognitionSystem.Recognizers.Add(new RuDateRecognizer());
+            RecognitionSystem.Language.Culture.DateTimeFormat =
+                CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat;
+            RecognitionSystem.Recognizers.Add(new GroupRecognizer());
+            RecognitionSystem.CreateRecognizer("teacherName", new Regex(@"[А-Яа-я]+ [А-Яа-я]\.? [А-Яа-я]\.?"));
             //TODO WORDNET
 
-            using (var dbContext = new NureBotDbContext(true))
+            RecognitionSystem.MainUser.ResponseReceived += async (sender, arg) =>
             {
-                dbContext.Database.Initialize(true);
-                UserService = new UserService(new UserRepository(dbContext, dbContext.Users));
+                var msg = JsonConvert.DeserializeObject<MessageTransfer>(arg.Response.Text);
 
-                Bot.SetWebhookAsync();
+                await Bot.SendTextMessageAsync(msg.ChatId, msg.Message);
+            };
 
-                Bot.StartReceiving();
-                Console.ReadLine();
-                Bot.StopReceiving();
-            }
+
+            Bot.SetWebhookAsync();
+            Bot.StartReceiving();
+            Console.ReadLine();
+            Bot.StopReceiving();
+
+            dbContext.Dispose();
+            unityContainer.Dispose();
         }
 
         private static void Bot_OnReceiveError(object sender, Telegram.Bot.Args.ReceiveErrorEventArgs e)
@@ -76,20 +97,83 @@ namespace TelegramNureBot
             if (message == null || message.Type != MessageType.TextMessage) return;
 
             User user = CheckRegistration(message);
-            CheckUserRoleAsync(user, message);
+            user = await CheckUserRoleAsync(user, message);
 
             if (user.Role == Role.NotSet) return;
 
-            BotUser recognitionUser = RecognitionSystem.Users.FirstOrDefault(a => a.ID == user.Id.ToString()) ??
-                                      RecognitionSystem.CreateUser(user.ToString());
+            if (user.Role == Role.Student)
+            {
+                var student = user as Student;
+                if (student == null) return;
 
-            recognitionUser.Context.SharedData.Add(user);
+                switch (student.GroupId)
+                {
+                    case 0:
+                        await Bot.SendTextMessageAsync(message.Chat.Id, "Будь добр, напиши из какой ты группы?");
+                        UService.ChangeGroup(user.Id, -1);
+                        return;
+                    case -1:
+                        try
+                        {
+                            int id = CistApi.GetGroupIdFromName(message.Text);
+                            UService.ChangeGroup(user.Id, id);
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Отлично, я запомнил это!");
 
-            var request = recognitionUser.CreateRequest(message.Text);
-            var evaluateRequest=RecognitionSystem.Evaluate(request);
-            evaluateRequest.Invoke();
+                        }
+                        catch (Exception)
+                        {
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Что-то у меня не получается найти такую группу, попробуй ещё раз!");
+                            return;
+                        }
+                        return;
+                    default: break;
+                }
 
-            await Bot.SendTextMessageAsync(message.Chat.Id, evaluateRequest.Serialize());
+            }
+            else if (user.Role == Role.Teacher)
+            {
+                var teacher = user as Teacher;
+                if (teacher == null) return;
+
+                switch (teacher.TeacherId)
+                {
+                    case 0:
+                        await Bot.SendTextMessageAsync(message.Chat.Id, "Пожалуйста, напишите ваше ФИО");
+                        UService.ChangeTeacherId(teacher.Id, -1);
+                        return;
+                    case -1:
+                        try
+                        {
+                            int id = CistApi.GetTeacherIdFromName(message.Text);
+                            UService.ChangeTeacherId(user.Id, id);
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Отлично, я запомнил это!");
+                            return;
+                        }
+                        catch (Exception)
+                        {
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Что-то у меня не получается найти вас, попробуйте еще раз!");
+                        }
+                        return;
+                    default: break;
+                }
+            }
+
+
+            RecognitionSystem.MainUser.Context.SharedData.Add(user);
+
+            var evaluateRequest = RecognitionSystem.Evaluate(message.Text);
+            try
+            {
+                evaluateRequest.Invoke();
+            }
+            catch (Exception)
+            {
+                await Bot.SendTextMessageAsync(message.Chat.Id,
+                    $"Извини, не получилось выполнить твой запроc{Emoji.Disappointed}\n" + 
+                    $"Какие-то проблемы на сервере\n" + 
+                    $"Попробуй по позже!");
+            }
+            
         }
 
 
@@ -97,16 +181,27 @@ namespace TelegramNureBot
         {
             try
             {
-                User user = UserService.View(message.Chat.Id);
+                var user = UService.View<User>(message.Chat.Id);
+                switch (user.Role)
+                {
+                    case Role.Student:
+                        user = UService.View<Student>(message.Chat.Id);
+                        break;
+                    case Role.Teacher:
+                        user = UService.View<Teacher>(message.Chat.Id);
+                        break;
+                    default:
+                        break;
+                }
                 return user;
             }
             catch (Exception)
             {
-                return UserService.CreateUser(message.Chat.Id, message.From.FirstName, Role.NotSet);
+                return UService.CreateUser(message.Chat.Id, message.From.FirstName, Role.NotSet);
             }
 
         }
-        public static async void CheckUserRoleAsync(User user, Message message)
+        public static async Task<User> CheckUserRoleAsync(User user, Message message)
         {
             if (user.Role == Role.NotSet)
                 if (!message.Text.StartsWith(Emoji.Star))
@@ -118,16 +213,21 @@ namespace TelegramNureBot
 
                     string msg = message.Text.Replace(Emoji.Star, "");
 
-                    if (msg.Equals(rm.GetString("Student")))
-                        UserService.ChangeRole(user.Id, Role.Student);
-                    else if (msg.Equals(rm.GetString("Teacher")))
-                        UserService.ChangeRole(user.Id, Role.Teacher);
-                    else if (msg.Equals(rm.GetString("None")))
-                        UserService.ChangeRole(user.Id, Role.None);
+                    if (msg.Equals(Rm.GetString("Student")))
+                    {
+                        UService.ChangeRole(user.Id, Role.Student);
+                        user = UService.View<Student>(user.Id);
+                    }
+                    else if (msg.Equals(Rm.GetString("Teacher")))
+                    {
+                        UService.ChangeRole(user.Id, Role.Teacher);
+                        user = UService.View<Teacher>(user.Id);
+                    }
 
-                    await Bot.SendTextMessageAsync(message.Chat.Id, rm.GetString("RoleSetMessage"),
+                    await Bot.SendTextMessageAsync(message.Chat.Id, Rm.GetString("RoleSetMessage"),
                     replyMarkup: new ReplyKeyboardHide());
                 }
+            return user;
         }
         public static async void RequestUserRole(User user, long chatId)
         {
@@ -135,20 +235,16 @@ namespace TelegramNureBot
    {
                     new []
                     {
-                        new KeyboardButton(Emoji.Star + rm.GetString("Student")),
+                        new KeyboardButton(Emoji.Star + Rm.GetString("Student")),
                     },
                     new []
                     {
-                        new KeyboardButton(Emoji.Star + rm.GetString("Teacher")),
-                    },
-                    new []
-                    {
-                        new KeyboardButton(Emoji.Star + rm.GetString("None")),
+                        new KeyboardButton(Emoji.Star + Rm.GetString("Teacher")),
                     }
                 });
 
             await Bot.SendTextMessageAsync(chatId,
-                $"{rm.GetString("NewUserMessage")} {user.FirstName},{rm.GetString("ChooseRole")}", replyMarkup: keyboard);
+                $"{Rm.GetString("NewUserMessage")} {user.FirstName},{Rm.GetString("ChooseRole")}", replyMarkup: keyboard);
 
         }
     }

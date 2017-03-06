@@ -7,6 +7,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramNureBot", "NureBot\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CistNureApi", "CistNureApi\CistNureApi.csproj", "{9EDEB637-865A-42DA-BF75-A9D66C839856}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dependencies", "Dependencies\Dependencies.csproj", "{F10CCAAF-5EF8-4475-9E89-E8967439CE53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Exceptions\Exceptions.csproj", "{979F0BB3-B45E-43D1-93E0-93B39BC88DDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{57929733-9A3C-4C29-B6E8-96465625974D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{F64E529A-7C81-4E74-B391-198990993235}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.EF", "Repository.EF\Repository.EF.csproj", "{2ACAF9A8-44B8-4EC6-9F9A-521643CB726D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{61F6BABC-23E9-4A86-9268-A2E5B9A7DA7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Impl", "Service.Impl\Service.Impl.csproj", "{38875035-3029-4583-B3E5-49F15B5F61CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +35,39 @@ Global
 		{9EDEB637-865A-42DA-BF75-A9D66C839856}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EDEB637-865A-42DA-BF75-A9D66C839856}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EDEB637-865A-42DA-BF75-A9D66C839856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F10CCAAF-5EF8-4475-9E89-E8967439CE53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F10CCAAF-5EF8-4475-9E89-E8967439CE53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F10CCAAF-5EF8-4475-9E89-E8967439CE53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F10CCAAF-5EF8-4475-9E89-E8967439CE53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{979F0BB3-B45E-43D1-93E0-93B39BC88DDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{979F0BB3-B45E-43D1-93E0-93B39BC88DDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{979F0BB3-B45E-43D1-93E0-93B39BC88DDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{979F0BB3-B45E-43D1-93E0-93B39BC88DDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57929733-9A3C-4C29-B6E8-96465625974D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57929733-9A3C-4C29-B6E8-96465625974D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57929733-9A3C-4C29-B6E8-96465625974D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57929733-9A3C-4C29-B6E8-96465625974D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F64E529A-7C81-4E74-B391-198990993235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F64E529A-7C81-4E74-B391-198990993235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F64E529A-7C81-4E74-B391-198990993235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F64E529A-7C81-4E74-B391-198990993235}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ACAF9A8-44B8-4EC6-9F9A-521643CB726D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ACAF9A8-44B8-4EC6-9F9A-521643CB726D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ACAF9A8-44B8-4EC6-9F9A-521643CB726D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ACAF9A8-44B8-4EC6-9F9A-521643CB726D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61F6BABC-23E9-4A86-9268-A2E5B9A7DA7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61F6BABC-23E9-4A86-9268-A2E5B9A7DA7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61F6BABC-23E9-4A86-9268-A2E5B9A7DA7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61F6BABC-23E9-4A86-9268-A2E5B9A7DA7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38875035-3029-4583-B3E5-49F15B5F61CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38875035-3029-4583-B3E5-49F15B5F61CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38875035-3029-4583-B3E5-49F15B5F61CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38875035-3029-4583-B3E5-49F15B5F61CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.PolicyInjection.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45
 	EndGlobalSection
 EndGlobal

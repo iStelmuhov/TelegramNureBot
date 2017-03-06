@@ -11,5 +11,6 @@ namespace CistNureApi.Model.Api
         [JsonProperty("full_name")]
         public string FullName { get; set; }
         public List<Direction> Directions { get; set; }
+        public List<Department> Departments { get; set; }
     }
 }

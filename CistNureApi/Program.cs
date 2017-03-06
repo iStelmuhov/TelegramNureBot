@@ -6,7 +6,7 @@ namespace CistNureApi
     {
         public static void Main(string[] args)
         {
-            var a=CistApi.GetGroupTimetable(CistApi.GetGroupIdFromName("кі-13-3"),DateTime.Today.AddDays(1));
+            var a = CistApi.ReciveAllTeachers();
             Console.WriteLine(a.ToString());
         }
     }

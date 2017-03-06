@@ -1,4 +1,4 @@
-﻿using Syn.Bot.Oscova.Interfaces;
+﻿using IStemmer = Syn.Bot.Oscova.Interfaces.IStemmer;
 
 namespace TelegramNureBot.Helper
 {
@@ -6,7 +6,7 @@ namespace TelegramNureBot.Helper
     {
         public string Stem(string word)
         {
-            return new RussianStemmer().Stem(word);
+            return new Iveonik.Stemmers.RussianStemmer().Stem(word);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace CistNureApi.Model.Dto
         public DateTime EndTime { get; set; }
         public int NumberPair { get; set; }
         public string Type { get; set; }
+        public string Auditory { get; set; }
         public List<string> Teachers { get; set; }
 
         public SubjectDto()
@@ -18,22 +19,13 @@ namespace CistNureApi.Model.Dto
             Teachers=new List<string>();
         }
 
-        public SubjectDto(string name, DateTime startTime, DateTime endTime, int numberPair, string type, List<string> teachers)
-        {
-            Name = name;
-            StartTime = startTime;
-            EndTime = endTime;
-            NumberPair = numberPair;
-            Type = type;
-            Teachers = teachers;
-        }
-
         public override string ToString()
         {
-            string result= $"Название:{Name} {Type}\nНомер пары:{NumberPair} Время:{StartTime:HH:mm}-{EndTime:HH:mm}\n";
+            string result= $"Название:{Name} {Type}\nНомер пары: {NumberPair}  Время:{StartTime:HH:mm}-{EndTime:HH:mm}\nАудитория:{Auditory}\n";
 
             result += "Преподователи:";
             foreach (var teacher in Teachers)
+
             {
                 result += teacher+", ";
             }
