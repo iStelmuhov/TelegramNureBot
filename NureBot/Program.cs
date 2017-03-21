@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Resources;
+using System.Text;
 using Microsoft.Practices.Unity;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using CistNureApi;
 using Dependencies;
+using Jint;
 using Model;
 using Newtonsoft.Json;
 using Repository.EF;
@@ -22,6 +25,7 @@ using TelegramNureBot.Helper;
 using TelegramNureBot.Properties;
 using User = Model.User;
 using Teacher = Model.Teacher;
+using Type = CistNureApi.Model.Api.Type;
 
 namespace TelegramNureBot
 {
@@ -55,6 +59,8 @@ namespace TelegramNureBot
             Bot.OnReceiveError += Bot_OnReceiveError;
 
             RecognitionSystem.Dialogs.Add(new CistDialog());
+            RecognitionSystem.Dialogs.Add(new WeatherDialog());
+
             RecognitionSystem.MainUser.Context.SharedData.Add(Bot);
             RecognitionSystem.MainUser.Context.SharedData.Add(UService);
             RecognitionSystem.Language.Stemmer = new RussianStemmer();
@@ -67,18 +73,24 @@ namespace TelegramNureBot
                 CultureInfo.GetCultureInfo("ru-RU").DateTimeFormat;
             RecognitionSystem.Recognizers.Add(new GroupRecognizer());
             RecognitionSystem.CreateRecognizer("teacherName", new Regex(@"[А-Яа-я]+ [А-Яа-я]\.? [А-Яа-я]\.?"));
-            //TODO WORDNET
+
 
             RecognitionSystem.MainUser.ResponseReceived += async (sender, arg) =>
             {
                 var msg = JsonConvert.DeserializeObject<MessageTransfer>(arg.Response.Text);
-
-                await Bot.SendTextMessageAsync(msg.ChatId, msg.Message);
+                
+                await Bot.SendTextMessageAsync(msg.ChatId, msg.Message,replyMarkup:msg.ReplyMarkup);
             };
 
 
             Bot.SetWebhookAsync();
             Bot.StartReceiving();
+
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            Console.WriteLine(@"Service started");
+            Console.WriteLine(@"Press Enter to Stop Service!");
             Console.ReadLine();
             Bot.StopReceiving();
 
@@ -88,12 +100,20 @@ namespace TelegramNureBot
 
         private static void Bot_OnReceiveError(object sender, Telegram.Bot.Args.ReceiveErrorEventArgs e)
         {
-            Debugger.Break();
+            Debugger.Log(0,"Bot",e.ApiRequestException.Message);
         }
 
         private static async void Bot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
             var message = e.Message;
+
+            if (message != null && message.Type == MessageType.LocationMessage)
+            {
+                var msg = CistApi.GetTravelTime($"{message.Location.Latitude.ToString().Replace(",",".")},{message.Location.Longitude.ToString().Replace(",", ".")}");
+                await Bot.SendTextMessageAsync(message.Chat.Id, msg, replyMarkup: new ReplyKeyboardHide());
+                return;
+            }
+
             if (message == null || message.Type != MessageType.TextMessage) return;
 
             User user = CheckRegistration(message);
@@ -159,9 +179,54 @@ namespace TelegramNureBot
             }
 
 
-            RecognitionSystem.MainUser.Context.SharedData.Add(user);
+            var textMessage = message.Text;
 
-            var evaluateRequest = RecognitionSystem.Evaluate(message.Text);
+            switch (message.Text)
+            {
+                case "/timetable":
+                    textMessage = "Покажи мне моё расписание";
+                    break;
+                case "/weather":
+                    textMessage = "Погода";
+                    break;
+                case "/news":
+                    textMessage = "Новости";
+                    break;
+                case "/locate":
+                    var keyboard = new ReplyKeyboardMarkup(new[]
+                        {
+                            new KeyboardButton($"{Emoji.Round_Pushpin} Моё местоположение")
+                            {
+                                RequestLocation = true
+                            }
+                        }
+                    );
+                    await Bot.SendTextMessageAsync(message.Chat.Id,"Отправьте пожалуйста своё местоположение!", replyMarkup: keyboard);
+                    return;
+                case "/help":
+                    StringBuilder sb=new StringBuilder();
+                    sb.AppendLine("Для общения с ботом можно использовать как быстрые команды:");
+                    sb.Append(
+                        $"{Emoji.White_Check_Mark} /timetable - Расписание на сегодня\n{Emoji.White_Check_Mark} /weather - Погода\n{Emoji.White_Check_Mark} /news - Новости\n{Emoji.White_Check_Mark} /locate - Маршрут до университета\n{Emoji.White_Check_Mark} /help - Помощь\n{Emoji.White_Check_Mark} /restart - Перезагрузка отношений\n");
+                    sb.AppendLine("Так и всевозможные фразы:");
+                    sb.AppendLine($"{Emoji.Arrow_Right} Покажи мне моё расписание");
+                    sb.AppendLine($"{Emoji.Arrow_Right} Покажи мне моё расписание на [дату]");
+                    sb.AppendLine($"{Emoji.Arrow_Right} Расписание [название группы | ФИО преподователя]");
+                    sb.AppendLine($"{Emoji.Arrow_Right} Новости");
+                    sb.AppendLine("И много много других фраз!");
+
+                    await Bot.SendTextMessageAsync(message.Chat.Id, sb.ToString());
+                    return;
+                case "/restart":
+                        UService.RemoveUser(user.Id);                        
+                    await Bot.SendTextMessageAsync(message.Chat.Id, "Хорошо, как скажешь!");
+                    return;
+                default:
+                    break;
+            }
+
+            RecognitionSystem.MainUser.Context.SharedData.Add(user);
+            var evaluateRequest = RecognitionSystem.Evaluate(textMessage);
             try
             {
                 evaluateRequest.Invoke();
@@ -169,11 +234,11 @@ namespace TelegramNureBot
             catch (Exception)
             {
                 await Bot.SendTextMessageAsync(message.Chat.Id,
-                    $"Извини, не получилось выполнить твой запроc{Emoji.Disappointed}\n" + 
-                    $"Какие-то проблемы на сервере\n" + 
+                    $"Извини, не получилось выполнить твой запроc{Emoji.Disappointed}\n" +
+                    $"Какие-то проблемы на сервере\n" +
                     $"Попробуй по позже!");
             }
-            
+
         }
 
 

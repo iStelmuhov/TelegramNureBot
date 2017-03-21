@@ -14,6 +14,7 @@ namespace Service
         void ChangeRole(long id, Role newRole);
         void ChangeGroup(long id, int groupId);
         void ChangeTeacherId(long id, int teacherId);
+        void RemoveUser(long id);
 
     }
 }

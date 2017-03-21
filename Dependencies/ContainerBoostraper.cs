@@ -15,7 +15,7 @@ namespace Dependencies
 {
     public static class ContainerBoostraper
     {
-        public static void RegisterTypes(IUnityContainer container, NureBotDbContext dbContext,string telegramTolken)
+        public static void RegisterTypes(IUnityContainer container, NureBotDbContext dbContext, string telegramTolken)
         {
             Console.WriteLine("Configuring dependencies container...");
             container.AddNewExtension<Interception>();
@@ -26,10 +26,10 @@ namespace Dependencies
             RegisterServices(container);
             RegisterRepositories(container);
 
-            container.RegisterInstance<OscovaBot>(new OscovaBot());
+            container.RegisterType<OscovaBot,OscovaBot>(new Interceptor<VirtualMethodInterceptor>(), new InterceptionBehavior<ExceptionInterceptionBehavior>(),
+                    new InterceptionBehavior<SemanticLoggingInterceptionBehavior>());
             container.RegisterInstance<TelegramBotClient>(new TelegramBotClient(telegramTolken));
-            
-            PrintContainerDebuggingInfo( container );
+            //PrintContainerDebuggingInfo( container );
             Console.WriteLine();
         }
 
@@ -79,7 +79,7 @@ namespace Dependencies
             container.RegisterTypes(
                 AllClasses.FromAssemblies(
                     new Assembly[] {
-                        Assembly.Load( "TelegramNureBot" )
+                        Assembly.Load( "TelegramNureBot.WPF" )
                     }
                 ),
                 WithMappings.FromMatchingInterface,
@@ -89,8 +89,7 @@ namespace Dependencies
                 {
                     new Interceptor< InterfaceInterceptor >(),
                     new InterceptionBehavior< ExceptionInterceptionBehavior >(),
-                    new InterceptionBehavior< SemanticLoggingInterceptionBehavior >(),
-                    new InterceptionBehavior< PolicyInjectionBehavior >( "ValidationPolicy" )
+                    new InterceptionBehavior< SemanticLoggingInterceptionBehavior >()
                 }
             );
         }

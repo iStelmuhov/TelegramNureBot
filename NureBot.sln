@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26206.0
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramNureBot", "NureBot\TelegramNureBot.csproj", "{9BCDF6DF-E8AA-40B4-BC92-6C110E1CDDA8}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{61F6BABC-23E9-4A86-9268-A2E5B9A7DA7C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Impl", "Service.Impl\Service.Impl.csproj", "{38875035-3029-4583-B3E5-49F15B5F61CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramNureBot.WPF", "TelegramNureBot.WPF\TelegramNureBot.WPF.csproj", "{BB7CE59F-2AE7-4FEF-AAD5-5ED6E6D8CBBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{38875035-3029-4583-B3E5-49F15B5F61CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38875035-3029-4583-B3E5-49F15B5F61CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38875035-3029-4583-B3E5-49F15B5F61CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB7CE59F-2AE7-4FEF-AAD5-5ED6E6D8CBBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB7CE59F-2AE7-4FEF-AAD5-5ED6E6D8CBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB7CE59F-2AE7-4FEF-AAD5-5ED6E6D8CBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB7CE59F-2AE7-4FEF-AAD5-5ED6E6D8CBBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

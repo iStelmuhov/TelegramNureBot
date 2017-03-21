@@ -2,8 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.ServiceModel.Syndication;
+using System.Text;
+using System.Xml;
 using CistNureApi.Model.Api;
 using CistNureApi.Model.Dto;
+using GoogleMapsApi;
+using GoogleMapsApi.Entities.Common;
+using GoogleMapsApi.Entities.Directions.Request;
+using GoogleMapsApi.Entities.Directions.Response;
+using GoogleMapsApi.StaticMaps;
+using GoogleMapsApi.StaticMaps.Entities;
 using Newtonsoft.Json;
 using Yandex.Translator;
 
@@ -125,10 +134,11 @@ namespace CistNureApi
 
         public static int GetTeacherIdFromName(string name)
         {
-
+            var teachers = ReciveAllTeachers();
             string ukName = TranslateFio(name);
+            ukName = DamerauLevenshteinDistance.ClosesWord(ukName, teachers.Select(a => a.ShortName));
 
-            var teacher = ReciveAllTeachers().FirstOrDefault(a => a.ShortName.Split(' ')[0].Equals(ukName.Split(' ')[0], StringComparison.OrdinalIgnoreCase));
+            var teacher = ReciveAllTeachers().FirstOrDefault(a => a.ShortName.Equals(ukName, StringComparison.OrdinalIgnoreCase));
 
             if (teacher == null) throw new ArgumentOutOfRangeException();
 
@@ -192,6 +202,58 @@ namespace CistNureApi
 
 
             return DayTimetable.GetNearestTimeTable(root);
+        }
+
+        public static string GetNureFeed()
+        {
+            StringBuilder result=new StringBuilder();
+
+            XmlReader reader=XmlReader.Create("http://nure.ua/category/all_news/feed/",new XmlReaderSettings(){DtdProcessing = DtdProcessing.Parse});
+            SyndicationFeed channel=SyndicationFeed.Load(reader);
+            
+            if (channel != null)
+            {
+                result.AppendLine(channel.Title.Text);
+
+                for(int i=0;i<channel.Items.Count();i++)
+                {
+                    var item = channel.Items.ElementAt(i);
+                    result.AppendLine($"{i + 1}) {item.Title.Text}\n{item.PublishDate.DateTime.ToShortDateString()}\n{item.Summary.Text}\nСсылка:{item.Id}\n");
+                }
+            }
+
+            return result.ToString();
+        }
+
+        public static string GetTravelTime(string origin,string dest= "50.0154346,36.2284612")
+        {
+            StringBuilder result = new StringBuilder();
+
+            DirectionsRequest directionsRequest = new DirectionsRequest()
+            {
+                Origin = origin,
+                Destination = dest,
+                ApiKey = "AIzaSyDgjuPVvAcN9RtqgFc35OhxJPXNjQ_ugPM",
+                Language = "ru",
+                TravelMode = TravelMode.Transit,
+                DepartureTime = DateTime.Now.AddMinutes(10),
+            };
+
+            DirectionsResponse directions = GoogleMaps.Directions.Query(directionsRequest);
+            var route = directions.Routes.First().Legs.First();
+            StaticMapsEngine staticMapGenerator=new StaticMapsEngine();
+            IEnumerable<Step> steps = route.Steps;
+            IList<ILocationString> path = steps.Select(step => step.StartLocation).ToList<ILocationString>();
+            path.Add(steps.Last().EndLocation);
+
+            string url =
+                $"https://www.google.com.ua/maps/dir/'{origin}'/{dest}'";
+
+            result.AppendLine($"Отлично, от вас до ВУЗа {route.Distance.Text}");
+            result.AppendLine($"Если выйти через 10 минут, то можно добратся за {route.Duration.Text}");
+            result.AppendLine($"В ВУЗе вы будете около {route.ArrivalTime.Text}");
+            result.AppendLine($"Вот оптимальный маршрут для тебя {url}");
+            return result.ToString();
         }
         private static double ConvertToUnixTimestamp(DateTime date)
         {

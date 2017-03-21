@@ -95,5 +95,11 @@ namespace Service.Impl
         {
             return ServiceUtils.ResolveEntity(UserRepository, id) as T;
         }
+
+        public void RemoveUser(long id)
+        {
+            User a = ResolveUser<User>(id);
+            UserRepository.Delete(a);
+        }
     }
 }

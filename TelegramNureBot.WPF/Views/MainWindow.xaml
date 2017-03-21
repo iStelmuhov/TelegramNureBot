@@ -1,0 +1,134 @@
+﻿<controls:MetroWindow
+    x:Class="TelegramNureBot.WPF.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:conventers="clr-namespace:TelegramNureBot.WPF.Conventers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helper="clr-namespace:TelegramNureBot.WPF.Helper"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModel="clr-namespace:TelegramNureBot.WPF.ViewModel"
+    Title="Telegram Nure Bot"
+    Width="700"
+    Height="350"
+    GlowBrush="{DynamicResource AccentColorBrush}"
+    ShowIconOnTitleBar="True"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModel:MainViewModel />
+    </Window.DataContext>
+
+    <Window.Resources>
+        <DrawingImage x:Key="BotImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="AliceBlue" Geometry="M1480 2960 c-142 -11 -283 -51 -413 -116 -67 -34 -307 -197 -338 -230 -24 -26 -24 -26 5 -95 5 -12 0 -14 -29 -11 -23 3 -53 -4 -88 -20 -50 -24 -325 -73 -387 -69 -130 7 -152 -4 -187 -91 -47 -115 -51 -375 -8 -458 38 -74 117 -100 181 -61 30 18 64 74 64 104 0 9 4 18 9 21 5 3 12 -20 16 -52 4 -31 12 -63 17 -69 6 -7 30 -13 54 -13 28 0 44 -4 44 -12 0 -7 9 -94 19 -193 12 -111 15 -186 10 -197 -5 -9 -9 -33 -9 -53 0 -29 8 -45 34 -71 49 -49 84 -46 220 20 61 30 137 66 169 80 l57 25 0 -84 0 -84 -37 -7 c-255 -45 -288 -54 -311 -79 -28 -33 -28 -39 7 -236 l30 -164 39 -35 c55 -49 252 -189 346 -247 74 -44 84 -48 140 -46 71 2 373 66 416 88 20 10 46 46 86 117 31 57 61 108 66 115 7 9 25 3 71 -23 34 -20 102 -55 151 -80 114 -56 157 -57 357 -9 172 42 190 49 208 78 39 62 126 216 137 244 24 56 4 87 -89 141 l-81 47 105 7 c118 7 179 20 228 50 51 32 61 67 54 190 l-6 105 34 0 c18 0 35 5 37 11 2 7 12 12 21 12 14 0 31 32 70 130 54 133 56 158 16 174 -8 3 -15 10 -15 16 0 6 41 72 92 148 87 130 92 140 96 199 4 55 2 64 -21 87 -36 36 -91 40 -283 22 -93 -9 -233 -16 -310 -16 -133 0 -142 -1 -161 -22 -11 -13 -24 -32 -28 -43 -7 -18 -9 -16 -15 12 -17 75 -55 84 -200 49 -57 -14 -107 -22 -111 -18 -22 23 -69 372 -69 514 0 77 -3 90 -22 108 -77 73 -267 108 -488 90z m-738 -510 c42 -32 84 -109 123 -224 63 -184 50 -287 -37 -294 -47 -4 -85 28 -127 108 -22 40 -38 60 -46 56 -18 -6 -31 32 -16 47 20 20 13 65 -14 83 -21 14 -31 15 -50 6 -14 -7 -25 -16 -25 -21 0 -11 -83 -22 -185 -22 -83 -1 -115 -14 -115 -49 0 -28 25 -52 53 -52 22 0 27 -5 27 -24 0 -21 -5 -24 -35 -24 -30 0 -35 -3 -35 -25 0 -51 -23 -127 -47 -155 -47 -57 -123 -35 -153 45 -33 86 -19 340 23 425 18 37 29 47 60 54 28 7 44 6 58 -2 15 -10 34 -10 84 -1 103 18 104 2 2 -34 -13 -5 -16 -14 -12 -32 3 -14 7 -36 10 -49 3 -13 11 -26 19 -29 15 -6 264 28 273 37 3 2 1 33 -3 68 -11 85 -12 82 11 87 11 2 31 12 44 22 31 25 82 24 113 -1z m1163 -52 c17 -9 40 -27 52 -40 21 -23 49 -105 39 -115 -2 -3 -206 -6 -453 -7 -471 -2 -478 -2 -608 -50 -45 -17 20 25 116 74 115 59 243 103 376 130 136 27 150 28 308 26 107 -1 147 -6 170 -18z m1210 -152 c41 -18 52 -50 32 -97 -8 -19 -58 -101 -112 -183 l-99 -149 -99 7 c-113 8 -132 0 -143 -61 -7 -37 -8 -37 -71 -12 -56 23 -56 -11 1 -48 33 -21 34 -23 31 -84 -2 -61 -3 -64 -41 -88 -34 -22 -36 -26 -18 -29 12 -2 43 5 70 15 44 17 53 17 89 4 l40 -14 3 -122 2 -123 -30 -25 c-45 -38 -124 -51 -312 -52 -197 0 -197 0 -224 105 -24 93 -14 233 26 370 35 118 65 175 112 216 46 39 182 100 266 121 l72 17 15 46 c29 86 40 91 206 88 126 -2 147 -1 172 16 15 10 27 27 27 39 0 19 -1 19 -20 2 -17 -16 -44 -17 -304 -16 -179 1 -293 -2 -305 -8 -28 -15 -81 -92 -140 -201 -28 -52 -51 -91 -51 -87 0 14 72 201 97 252 44 88 37 85 207 86 83 0 198 7 256 14 145 17 205 17 245 1z m-2519 -123 c3 -21 15 -80 25 -131 10 -52 17 -97 14 -102 -2 -4 -46 -10 -97 -14 -51 -4 -112 -10 -135 -13 l-43 -6 0 79 c0 44 3 109 6 146 l7 67 41 4 c23 2 71 4 108 5 l67 2 7 -37z m2124 32 c0 -3 -35 -22 -77 -44 -43 -22 -115 -64 -160 -94 -46 -30 -83 -52 -82 -48 0 3 26 44 57 91 l57 85 85 6 c47 3 93 6 103 7 9 1 17 0 17 -3z m-410 -126 c-11 -30 -39 -124 -61 -209 -23 -85 -42 -156 -43 -157 0 -1 -1 38 -1 86 0 64 -5 98 -19 130 l-20 43 24 18 c14 10 21 23 17 33 -4 10 7 24 32 42 21 14 49 37 61 50 13 14 25 23 27 21 2 -2 -5 -28 -17 -57z m-445 5 l209 -4 14 -25 c16 -32 9 -45 -27 -45 -39 0 -91 -38 -115 -85 -30 -58 -29 -174 2 -233 41 -77 129 -106 186 -61 l26 20 2 -63 c3 -121 1 -130 -45 -172 -23 -21 -76 -55 -117 -75 -75 -36 -75 -36 -205 -35 -146 1 -254 22 -381 75 l-74 31 0 44 c0 85 -54 168 -117 180 -44 8 -87 -11 -123 -55 l-30 -36 0 109 0 108 -57 -4 -58 -4 6 81 c10 119 23 151 69 175 68 35 221 69 375 84 22 2 87 2 145 -1 58 -3 199 -7 315 -9z m230 -126 c59 -27 93 -146 62 -221 -15 -35 -18 -37 -61 -37 -25 0 -56 -4 -69 -9 -22 -9 -26 -6 -43 32 -38 84 -14 204 47 234 30 16 32 16 64 1z m-1411 -65 c13 -39 87 -72 199 -88 l37 -6 0 -78 0 -77 -140 -58 c-77 -32 -142 -57 -144 -55 -4 4 -36 306 -36 336 0 7 8 13 19 13 10 0 24 7 31 15 16 20 27 19 34 -2z m-119 -70 c4 -38 12 -122 19 -188 8 -76 10 -124 4 -132 -7 -8 -1 -23 16 -46 31 -41 33 -76 6 -105 -49 -52 -122 -29 -128 41 -2 27 3 43 27 70 38 42 39 51 6 43 -20 -5 -25 -3 -25 11 0 10 -7 79 -15 153 -8 74 -15 152 -15 172 0 39 -1 39 82 46 13 2 18 -11 23 -65z m2390 0 c8 -3 15 -10 15 -17 0 -14 -80 -218 -90 -229 -9 -10 -155 40 -180 62 -17 15 -16 20 12 110 l30 94 99 -7 c55 -4 106 -9 114 -13z m-1927 -207 c2 -10 1 -32 -2 -49 -6 -30 -15 -36 -173 -107 -92 -41 -169 -76 -172 -77 -8 -4 -41 101 -33 105 86 41 351 150 362 148 8 0 16 -10 18 -20z m236 -46 c65 -78 50 -209 -29 -247 -28 -13 -38 -14 -64 -3 -45 18 -73 69 -73 133 -1 87 41 147 103 147 29 0 43 -7 63 -30z m-199 -157 c9 -51 41 -100 75 -118 60 -31 134 -11 167 45 9 16 20 30 23 30 3 0 38 -14 79 -30 144 -59 222 -74 386 -74 142 -1 153 0 207 26 31 14 78 46 104 70 l47 43 -7 -30 c-9 -37 -44 -95 -57 -95 -26 0 6 -19 41 -25 44 -7 50 -23 29 -69 -15 -31 -43 -41 -182 -63 -158 -25 -676 -25 -819 0 -123 21 -177 43 -189 74 -5 13 -9 76 -9 139 l0 114 49 0 c48 0 49 0 56 -37z m-145 -183 c0 -10 -7 -12 -113 -34 -37 -8 -71 -17 -74 -20 -18 -17 17 -18 98 -2 87 16 92 16 105 -1 20 -26 18 -28 -31 -41 -67 -18 -58 -36 13 -26 74 10 93 9 177 -8 72 -15 75 -21 15 -33 -56 -11 -70 -16 -70 -26 0 -14 44 -11 155 10 81 15 124 18 228 12 75 -3 127 -10 126 -16 0 -5 -69 -24 -153 -41 -175 -36 -196 -42 -196 -55 0 -15 48 -10 229 26 137 27 178 32 190 23 36 -27 81 -73 81 -82 0 -6 -84 -28 -187 -49 -194 -40 -206 -43 -199 -56 5 -8 269 31 340 50 21 6 40 8 43 5 4 -4 -45 -96 -51 -96 -6 0 -344 -72 -358 -76 -10 -3 -18 -10 -18 -15 0 -13 77 -4 230 27 63 13 116 21 118 19 2 -2 -5 -19 -16 -37 -21 -34 -23 -34 -204 -71 -170 -35 -212 -48 -191 -60 7 -4 151 19 308 48 36 7 39 6 25 -9 -20 -21 -316 -87 -400 -89 -62 -2 -68 0 -140 47 -139 90 -349 247 -354 264 -11 32 -56 297 -56 325 0 35 14 41 165 71 138 27 165 30 165 16z m1485 -62 c48 -24 58 -38 24 -38 -32 0 -262 -59 -273 -70 -18 -18 35 -11 192 25 l154 34 37 -23 c37 -24 67 -54 60 -60 -2 -2 -69 -18 -149 -36 -80 -18 -158 -38 -175 -45 l-30 -13 27 -1 c25 -1 247 41 289 54 24 8 24 3 -1 -44 -11 -23 -28 -40 -42 -43 -140 -30 -295 -71 -303 -80 -14 -14 60 -5 195 26 58 13 107 22 108 21 2 -2 -4 -17 -13 -33 -16 -27 -28 -32 -179 -66 -88 -21 -165 -42 -171 -48 -14 -14 77 -3 204 26 93 21 126 20 84 -2 -34 -18 -322 -82 -368 -82 -37 0 -71 13 -183 71 -138 71 -181 99 -152 99 9 0 49 -18 90 -40 41 -22 81 -40 88 -40 26 0 10 18 -48 52 -56 33 -66 48 -32 48 9 0 23 -6 31 -14 34 -30 60 -29 91 3 24 23 30 38 30 71 0 44 -21 95 -42 103 -7 2 -10 7 -7 11 7 8 169 -62 205 -89 l27 -20 -27 -53 c-15 -29 -43 -71 -63 -92 -29 -32 -42 -40 -72 -40 -34 -1 -35 -2 -17 -15 34 -26 66 -18 107 25 47 50 103 161 95 188 -8 25 -49 50 -161 98 -47 20 -84 38 -82 40 2 2 41 11 88 20 46 8 100 24 119 35 31 18 154 56 187 58 7 1 33 -9 58 -21z" />
+                    <GeometryDrawing Brush="AliceBlue" Geometry="M1590 1953 c-111 -27 -131 -35 -167 -66 -132 -116 -77 -349 86 -365 67 -6 113 12 159 62 80 87 83 211 6 296 -27 30 -31 39 -19 44 18 7 20 32 3 38 -7 3 -38 -1 -68 -9z m28 -83 c37 -23 72 -88 72 -135 0 -16 -9 -50 -20 -73 -20 -43 -20 -44 -59 -37 -36 6 -123 -5 -162 -20 -12 -5 -22 5 -38 38 -27 56 -27 102 2 157 42 84 132 114 205 70z" />
+                    <GeometryDrawing Brush="AliceBlue" Geometry="M627 1093 c-10 -10 -8 -53 2 -53 5 0 11 6 14 13 3 8 35 -3 103 -36 157 -77 438 -234 458 -256 18 -19 17 -22 -10 -76 -16 -30 -45 -77 -64 -103 -31 -40 -41 -47 -68 -46 -36 2 -42 -10 -13 -26 49 -26 87 3 156 122 49 82 55 127 24 157 -46 42 -489 278 -575 305 -11 3 -23 3 -27 -1z" />
+                    <GeometryDrawing Brush="AliceBlue" Geometry="M792 953 c-42 -17 -56 -135 -22 -190 42 -70 110 -20 110 82 0 80 -39 128 -88 108z" />
+                    <GeometryDrawing Brush="AliceBlue" Geometry="M936 851 c-24 -26 -39 -86 -30 -124 18 -84 56 -112 101 -73 23 20 27 33 30 87 3 51 0 70 -16 97 -24 37 -58 43 -85 13z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource AccentColorBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition
+                Width="*"
+                MinWidth="150"
+                MaxWidth="450" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid Column="0">
+            <StackPanel>
+                <Image
+                    Height="150"
+                    Margin="10"
+                    RenderTransformOrigin=".5,.5"
+                    Source="{StaticResource BotImage}">
+                    <Image.RenderTransform>
+                        <RotateTransform Angle="180" />
+                    </Image.RenderTransform>
+                </Image>
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <TextBox
+                        Grid.Row="0"
+                        materialDesign:HintAssist.Hint="Telegram Api Key"
+                        Foreground="AliceBlue"
+                        IsEnabled="False"
+                        Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding Path=TelegramApiKey}" />
+                    <TextBox
+                        Grid.Row="1"
+                        Margin="0,5,0,5"
+                        materialDesign:HintAssist.Hint="Culture"
+                        Foreground="AliceBlue"
+                        Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding Path=Culture, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                    <Button
+                        x:Name="StartButton"
+                        Grid.Row="2"
+                        Width="230"
+                        MinWidth="220"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                        Background="{DynamicResource AccentColorBrush}"
+                        Command="{Binding StartStopCommand}"
+                        Content="{Binding Path=StartButtonText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Foreground="AliceBlue"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" />
+                </Grid>
+            </StackPanel>
+
+        </Grid>
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Hidden">
+            <ItemsControl
+                x:Name="LogList"
+                HorizontalContentAlignment="Stretch"
+                Background="{Binding ElementName=StartButton, Path=Background}"
+                ItemsSource="{Binding Log}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <i:Interaction.Behaviors>
+                    <helper:ScrollOnNewItem />
+                </i:Interaction.Behaviors>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <materialDesign:Card
+                            Width="{Binding ElementName=LogList, Path=ActualWidth}"
+                            Margin="-3,1,-3,1"
+                            HorizontalAlignment="Stretch"
+                            Background="{Binding BgColor}"
+                            Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                            <StackPanel
+                                x:Name="logStack"
+                                Margin="5"
+                                HorizontalAlignment="Stretch"
+                                Orientation="Vertical">
+                                <Label
+                                    Content="{Binding Time}"
+                                    FontSize="16"
+                                    FontStretch="Expanded"
+                                    FontWeight="Light" />
+                                <Separator Background="#1F000000" Foreground="#FFFAFAFA" />
+                                <TextBlock
+                                    Width="{Binding ElementName=logStack, Path=ActualWidth}"
+                                    HorizontalAlignment="Stretch"
+                                    Text="{Binding Text}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </materialDesign:Card>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</controls:MetroWindow>

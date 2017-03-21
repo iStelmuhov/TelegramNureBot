@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace TelegramNureBot.Helper
+namespace TelegramNureBot.WPF.Helper
 {
     public class MessageTransfer
     {

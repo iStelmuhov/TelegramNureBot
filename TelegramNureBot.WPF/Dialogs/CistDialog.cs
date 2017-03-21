@@ -2,19 +2,16 @@
 using CistNureApi;
 using CistNureApi.Model.Dto;
 using Model;
-using Service;
-using Service.Impl;
 using Syn.Bot.Oscova;
 using Syn.Bot.Oscova.Attributes;
 using Syn.Bot.Oscova.Entities;
-using Syn.VA.Interaction;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramNureBot.Helper;
+using TelegramNureBot.WPF.Helper;
 using User = Model.User;
 
 
-namespace TelegramNureBot.Dialogs
+namespace TelegramNureBot.WPF.Dialogs
 {
     public class CistDialog : Dialog
     {
