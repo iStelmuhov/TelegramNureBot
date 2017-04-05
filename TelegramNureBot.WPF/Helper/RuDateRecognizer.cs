@@ -16,8 +16,8 @@ namespace TelegramNureBot.WPF.Helper
         {
             string script;
             var entities = new EntityCollection();
-
-            using (StreamReader sr=new StreamReader(@"C:\Users\iShyr\documents\visual studio 2017\Projects\NureBot\NureBot\Helper\RuDateParser.js"))
+            string dir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            using (StreamReader sr=new StreamReader(dir+@"\Helper\RuDateParser.js"))
             {
                 script = sr.ReadToEnd();
             }

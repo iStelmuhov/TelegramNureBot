@@ -25,7 +25,6 @@ using TelegramNureBot.WPF.Helper;
 using User = Model.User;
 using Teacher = Model.Teacher;
 using System.Threading.Tasks;
-using System.Windows.Interop;
 using MaterialDesignThemes.Wpf;
 using System.Resources;
 using System.Reflection;
@@ -35,13 +34,12 @@ namespace TelegramNureBot.WPF.ViewModel
     public class MainViewModel : ViewModelBase
     {
         [Dependency]
-        public  TelegramBotClient Bot { get; set; }
+        public TelegramBotClient Bot { get; set; }
         [Dependency]
-        public  IUserService UService { get; set; }
+        public IUserService UService { get; set; }
         [Dependency]
         public OscovaBot RecognitionSystem { get; set; }
 
-        public ResourceManager Rm = new ResourceManager("Resources", Assembly.GetExecutingAssembly());
         #region RaiseProperties
 
 
@@ -123,7 +121,7 @@ namespace TelegramNureBot.WPF.ViewModel
             var unityContainer = new UnityContainer();
             dbContext.Database.Initialize(true);
             ContainerBoostraper.RegisterTypes(unityContainer, dbContext, "356520093:AAGKBe8YFpR5_5WIkGfoeRbdTMuOKE2O9GQ");
-            
+
             Bot = unityContainer.Resolve<TelegramBotClient>();
             UService = unityContainer.Resolve<IUserService>();
             RecognitionSystem = unityContainer.Resolve<OscovaBot>();
@@ -171,7 +169,7 @@ namespace TelegramNureBot.WPF.ViewModel
                                {
                                    if (!isActive)
                                    {
-                                       
+
                                        Bot.SetWebhookAsync();
                                        Bot.StartReceiving();
                                        isActive = true;
@@ -191,7 +189,7 @@ namespace TelegramNureBot.WPF.ViewModel
                                catch (Exception ex)
                                {
                                    new PaletteHelper().ReplacePrimaryColor("red");
-                                   FailureMessage("Failure:"+ex.Message);
+                                   FailureMessage("Failure:" + ex.Message);
                                }
 
                            }));
@@ -200,7 +198,7 @@ namespace TelegramNureBot.WPF.ViewModel
 
         private void Bot_OnReceiveError(object sender, Telegram.Bot.Args.ReceiveErrorEventArgs e)
         {
-            FailureMessage("Bot error:"+e.ApiRequestException.Message);
+            FailureMessage("Bot error:" + e.ApiRequestException.Message);
         }
 
         private async void Bot_OnMessageAsync(object sender, Telegram.Bot.Args.MessageEventArgs e)
@@ -330,12 +328,12 @@ namespace TelegramNureBot.WPF.ViewModel
             var evaluateRequest = RecognitionSystem.Evaluate(textMessage);
             try
             {
-                NormalMessage($"Invoke request handler:{evaluateRequest.Intents.First().Name} +{(int)evaluateRequest.Intents.First().Score*100}%\nMessage:{textMessage} User:{message.Chat.Id}");
+                NormalMessage($"Invoke request handler:{evaluateRequest.Intents.First().Name} +{(int)evaluateRequest.Intents.First().Score * 100}%\nMessage:{textMessage} User:{message.Chat.Id}");
                 evaluateRequest.Invoke();
             }
             catch (Exception)
             {
-                WarningMessage("Reply not sent:"+message.Chat.Id);
+                WarningMessage("Reply not sent:" + message.Chat.Id);
                 await Bot.SendTextMessageAsync(message.Chat.Id,
                     $"Извини, не получилось выполнить твой запроc{Emoji.Disappointed}\n" +
                     $"Какие-то проблемы на сервере\n" +
@@ -355,7 +353,7 @@ namespace TelegramNureBot.WPF.ViewModel
                         user = UService.View<Student>(message.Chat.Id);
                         break;
                     case Role.Teacher:
-                        
+
                         user = UService.View<Teacher>(message.Chat.Id);
                         break;
                     default:
@@ -368,7 +366,6 @@ namespace TelegramNureBot.WPF.ViewModel
                 NormalMessage($"New user created:{message.Chat.Id} {message.From.FirstName}");
                 return UService.CreateUser(message.Chat.Id, message.From.FirstName, Role.NotSet);
             }
-
         }
         public async Task<User> CheckUserRoleAsync(User user, Message message)
         {
@@ -382,20 +379,20 @@ namespace TelegramNureBot.WPF.ViewModel
 
                     string msg = message.Text.Replace(Emoji.Star, "");
 
-                    if (msg.Equals(Rm.GetString("Student")))
+                    if (msg.Equals(" Я учусь"))
                     {
                         NormalMessage($"User role changed:{user.Id}");
                         UService.ChangeRole(user.Id, Role.Student);
                         user = UService.View<Student>(user.Id);
                     }
-                    else if (msg.Equals(Rm.GetString("Teacher")))
+                    else if (msg.Equals(" Я преподаю"))
                     {
                         NormalMessage($"User role changed:{user.Id}");
                         UService.ChangeRole(user.Id, Role.Teacher);
                         user = UService.View<Teacher>(user.Id);
                     }
 
-                    await Bot.SendTextMessageAsync(message.Chat.Id, Rm.GetString("RoleSetMessage"),
+                    await Bot.SendTextMessageAsync(message.Chat.Id, "Отлично, теперь я знаю кто ты!",
                     replyMarkup: new ReplyKeyboardHide());
                 }
             return user;
@@ -406,16 +403,16 @@ namespace TelegramNureBot.WPF.ViewModel
    {
                     new []
                     {
-                        new KeyboardButton(Emoji.Star + Rm.GetString("Student")),
+                        new KeyboardButton(Emoji.Star + " Я учусь"),
                     },
                     new []
                     {
-                        new KeyboardButton(Emoji.Star + Rm.GetString("Teacher")),
+                        new KeyboardButton(Emoji.Star + " Я преподаю"),
                     }
                 });
 
             await Bot.SendTextMessageAsync(chatId,
-                $"{Rm.GetString("NewUserMessage")} {user.FirstName},{Rm.GetString("ChooseRole")}", replyMarkup: keyboard);
+                $"Ой, а ты вроде новенький. {user.FirstName},ты студент или преподователь?", replyMarkup: keyboard);
 
         }
 
@@ -439,11 +436,11 @@ namespace TelegramNureBot.WPF.ViewModel
 
         private void NormalMessage(string text)
         {
-            App.Current.Dispatcher.Invoke(()=>
+            App.Current.Dispatcher.Invoke(() =>
             {
                 _log.Add(LogMessage.NormalMessage(text));
             });
-            
+
         }
 
         private void SuccessMessage(string text)
